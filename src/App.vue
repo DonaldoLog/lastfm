@@ -36,6 +36,7 @@ export default {
   methods:{
       refreshArtists(){
           const self = this
+          self.artists = [];
           self.loading = true;
           getArtists(this.selectedCountry)
             .then(function (res){
