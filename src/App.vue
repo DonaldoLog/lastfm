@@ -1,6 +1,6 @@
 <template >
 <div id="app">
-    <img class="logo" src="https://donaldolog.github.io/lastfm/dist/last-fm-lg.png"/>
+    <img class="logo" src="http://music.donaldolog.xyz/dist/last-fm-lg.png"/>
       <h1>Music</h1>
       <spinner v-show="loading"></spinner>
       <div class="">
