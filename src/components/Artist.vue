@@ -1,14 +1,20 @@
 <template lang="pug">
     li.hj
-      h2: a(:href="artist.url" target="_blank") {{artist.name}}
+      h2: a( target="_blank" @click="vm.getInfo(artist.mbid)") {{artist.name}}
       img(:src="artist.image[2]['#text']")
 </template>
 
 <script>
 export default {
     name: 'artist',
-    props: ['artist']
+    props: ['artist'],
+    methods: {
+        // getInfo(mb){
+        //     console.log(mb)
+        // }
+    }
 }
+// vm.$refs.artistA.doSomething();
 </script>
 
 <style lang="stylus" scoped>

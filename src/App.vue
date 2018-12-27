@@ -1,33 +1,75 @@
-<template lang="pug">
-    #app
-      img(src='./assets/logo.png')
-      h1 Music
-      spinner(v-show="loading")
-      select(v-model="selectedCountry")
-        option(v-for="country in countries" v-bind:value="country.value") {{ country.name }}
-      ul
-        artist(v-for="artist in artists"
-        v-bind:artist="artist" v-bind:key="artist.mb")
+<template >
+<div id="app">
+    <img class="logo" src="./assets/last-fm-lg.png"/>
+      <h1>Music</h1>
+      <spinner v-show="loading"></spinner>
+      <div class="">
+          <div style="margin: auto;" class="col-md-2">
+            <v-select v-model="selectedCountry" :options="countries"></v-select>
+          </div>
+          <div class="form-group">
+              <ul class="row from-group">
+            <li class="artist col-md-3" v-for="artist in artists">
+              <h2>
+                  <a target="_blank">{{artist.name}}</a>
+              </h2>
+              <img :src="artist.image[2]['#text']" @click="getInfo(artist.mbid)"/>
+            </li>
+          </ul>
+          </div>
+      </div>
+      <div>
+
+        <b-modal v-model="modalInfo" size="lg" centered  ok-only>
+            <div slot="modal-header">
+                <h5 class="modal-title">{{artistInfo.name}}</h5>
+            </div>
+            <img align="left" :src="artistInfo.imagen" alt="">
+            <p>Listeners: {{artistInfo.listeners}}</p>
+            <p>Playcount: {{artistInfo.playCount}}</p>
+            <p align="justify" v-html="artistInfo.content"> {{artistInfo.content}}</p>
+              <div slot="modal-footer" class="w-100">
+               <b-btn size="sm" class="float-right" variant="primary" @click="enviarModal()">
+                 Cerrar
+               </b-btn>
+             </div>
+        </b-modal>
+      </div>
+</div>
 </template>
 
 <script>
-import getArtists from './api'
+import {getArtists} from './api'
+import {getArtistInfo} from './api'
 import config from './api/config'
 import Artist from './components/Artist.vue'
 import Spinner from './Spinner.vue'
+import Vue from 'vue'
+import vSelect from 'vue-select'
+Vue.component('v-select', vSelect)
+
 export default {
   name: 'app',
   data () {
     return {
       artists: [],
       countries: [
-          { name: 'Argentina', value: 'argentina'},
-          { name: 'México', value: 'mexico'},
-          { name: 'Spain', value: 'spain'}
+          { label: 'Argentina', value: 'argentina'},
+          { label: 'México', value: 'mexico'},
+          { label: 'Spain', value: 'spain'}
       ],
-      selectedCountry: 'argentina',
-      loading: true
-    }
+      selectedCountry: { label: 'Argentina', value: 'argentina'    },
+      loading: true,
+      modalInfo: false,
+      artistInfo: {
+          name: '',
+          listeners: '0',
+          playCount: '',
+          content: '',
+          published: '',
+          imagen: ''
+      }
+      }
   },
   components:{
       Artist,
@@ -38,16 +80,40 @@ export default {
           const self = this
           self.artists = [];
           self.loading = true;
-          getArtists(this.selectedCountry)
+          getArtists(this.selectedCountry.value)
             .then(function (res){
-                self.loading = false;
-                // console.log(artists.artist)
+                self.loading = false
+                // console.log(res)
                 self.artists = res
             })
+      },
+      getInfo(mb){
+          const self = this
+          self.loading = true;
+
+          getArtistInfo(mb)
+          .then(function(res){
+              console.log(res);
+              self.artistInfo.name = res.name;
+              self.artistInfo.listeners = res.stats.listeners;
+              self.artistInfo.playCount = res.stats.playcount;
+              self.artistInfo.content = res.bio.content;
+              self.artistInfo.published = res.published;
+              self.artistInfo.imagen = res.image[3]['#text'];
+              self.modalInfo = !self.modalInfo
+              self.loading = false;
+
+          });
+      },
+      enviarModal(){
+          const self = this
+          self.modalInfo = false
+          console.log('enviarModal')
+
       }
   },
   mounted: function () {
-      // console.log(config.apiKey)
+      console.log(this.artistInfo.listeners)
       this.refreshArtists()
   },
   watch: {
@@ -65,7 +131,7 @@ export default {
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
   text-align center
-  color red !important
+  /* color red !important */
   margin-top 60px
 
 h1, h2
@@ -75,10 +141,15 @@ ul
   list-style-type none
   padding 0
 
-li
-  display inline-block
-  margin 0 10px
 
 a
   color #42b983
+
+.logo
+  width auto
+  height 120px
+
+li.artist
+  display block
+  margin 50px 0
 </style>

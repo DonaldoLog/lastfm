@@ -10,6 +10,9 @@ export default {
 
 <style scoped>
 .loader {
+  margin-left: 47%;
+  margin-top: 7%;
+  margin-right: auto;
   color: #11078b;
   font-size: 90px;
   text-indent: -9999em;
@@ -17,8 +20,8 @@ export default {
   width: 1em;
   height: 1em;
   border-radius: 50%;
-  margin: 72px auto;
-  position: relative;
+  position: fixed;
+  z-index: 999;
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);
