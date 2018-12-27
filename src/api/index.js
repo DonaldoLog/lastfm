@@ -2,8 +2,8 @@ import config from './config'
 import axios from 'axios';
 
 const apiKey = config.apiKey
-const URL = `http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&country=:country&api_key=${apiKey}&format=json`
-const URLINFO = `http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=:mib&api_key=${apiKey}&format=json`
+const URL = `https://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&country=:country&api_key=${apiKey}&format=json`
+const URLINFO = `https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&mbid=:mib&api_key=${apiKey}&format=json`
 // console.log(URL);
 export function getArtists(country){
     const url = URL.replace(':country',country)
